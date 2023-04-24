@@ -1,6 +1,7 @@
 {
   "watch": [
-    "src"
+    "src",
+    "api"
   ],
   "ext": "ts,json",
   "ignore": [

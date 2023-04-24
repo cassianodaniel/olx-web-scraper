@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "api/index.ts",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.ts",
+    "start": "nodemon api/index.ts",
     "codegen": "pnpm exec playwright codegen",
     "test": "pnpm exec playwright test example",
     "test:debug": "pnpm exec playwright test example --debug"

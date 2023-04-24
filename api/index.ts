@@ -1,8 +1,8 @@
-import { chromium } from 'playwright';
 import express from 'express';
 import bodyParser from 'body-parser';
 import Handlebars from 'handlebars';
 import { engine } from 'express-handlebars';
+import { chromium } from 'playwright';
 
 const app = express();
 const port = 3000;
@@ -115,7 +115,7 @@ app.get("/", (req, res) => {
     </style>
     <h1>Pesquise o carro</h1>
     <form action="/scrape" method="POST">
-      <input type="text" name="car" placeholder="Nome do carro" />
+      <input autocomplete="off" type="text" name="car" placeholder="Nome do carro" />
       <button type="submit">Pesquisar</button>
     </form>
     <script>

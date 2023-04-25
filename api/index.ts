@@ -1,6 +1,7 @@
 import express from 'express';
 import { engine } from 'express-handlebars';
 import bodyParser from 'body-parser';
+import { chromium } from 'playwright-core';
 
 const app = express();
 const port = 3000;
@@ -17,7 +18,6 @@ app.set('view engine', 'handlebars');
 const scrape = async (req, res) => {
   let { car } = req.body;
 
-  const { chromium } = await import('playwright');
 
   const browser = process.env.NODE_ENV?.trim() === 'dev' ? await chromium.launch({
     headless: false

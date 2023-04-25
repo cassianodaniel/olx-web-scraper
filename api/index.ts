@@ -1,7 +1,6 @@
 import express from 'express';
 import { engine } from 'express-handlebars';
 import bodyParser from 'body-parser';
-import Handlebars from 'handlebars';
 import { chromium } from 'playwright';
 
 const app = express();

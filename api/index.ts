@@ -1,7 +1,7 @@
 import express from 'express';
+import { engine } from 'express-handlebars';
 import bodyParser from 'body-parser';
 import Handlebars from 'handlebars';
-import { engine } from 'express-handlebars';
 import { chromium } from 'playwright';
 
 const app = express();
@@ -13,13 +13,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // To render a view using a template engine in Express.js
 app.set('view engine', 'handlebars');
 
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 const scrape = async (req, res) => {
   let { car } = req.body;
 
-  const browser = await chromium.connect(
+  const browser = process.env.ENV === 'DEV' ? await chromium.launch({
+    headless: false
+  }) : await chromium.connect(
     'wss://chrome.browserless.io/playwright?token=eebe19e4-9443-4b0d-b63d-c554768985f6'
   );
 
@@ -69,19 +71,13 @@ const scrape = async (req, res) => {
     });
   });
 
-  const source = "<p>Hello, {{name}}!</p>";
-  const template = Handlebars.compile(source);
-  const ctx = { x: "y" };
-  const html = template(ctx);
-
   function weight(car) {
     return car.km * 0.65 + car.price * 0.25 + car.year * 0.1;
   }
 
   const sortedCars = cars.sort((car1, car2) => weight(car1) - weight(car2));
 
-
-  res.render('../views/index.handlebars', { title: 'My Node.js Project', body: html, name: "Daniel", cars: sortedCars });
+  res.render('home', { cars: sortedCars });
 
   await context.close();
   await browser.close();

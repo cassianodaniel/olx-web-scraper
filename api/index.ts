@@ -81,7 +81,7 @@ const scrape = async (req, res) => {
   const sortedCars = cars.sort((car1, car2) => weight(car1) - weight(car2));
 
 
-  res.render('index', { title: 'My Node.js Project', body: html, name: "Daniel", cars: sortedCars });
+  res.render('../views/index.handlebars', { title: 'My Node.js Project', body: html, name: "Daniel", cars: sortedCars });
 
   await context.close();
   await browser.close();

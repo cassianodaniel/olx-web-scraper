@@ -18,9 +18,11 @@ app.set('view engine', 'handlebars');
 
 const scrape = async (req, res) => {
   let { car } = req.body;
-  const browser = await chromium.launch({
-    headless: true
-  });
+
+  const browser = await chromium.connect(
+    'wss://chrome.browserless.io/playwright?token=eebe19e4-9443-4b0d-b63d-c554768985f6'
+  );
+
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -33,9 +35,9 @@ const scrape = async (req, res) => {
   await page.goto('https://www.olx.com.br/');
 
   // Type and search car
-  await page.getByTestId('searchtext-input').click();
-  await page.getByTestId('searchtext-input').fill(car);
-  await page.getByTestId('searchtext-input').press('Enter');
+  await page.$('#searchtext-input').then((el) => el?.click());
+  await page.$('#searchtext-input').then((el) => el?.fill(car));
+  await page.$('#searchtext-input').then((el) => el?.press('Enter'));
 
   // Wait for the results to load
   await page.waitForLoadState('domcontentloaded');

@@ -1,7 +1,6 @@
 import express from 'express';
 import { engine } from 'express-handlebars';
 import bodyParser from 'body-parser';
-import { chromium } from 'playwright';
 
 const app = express();
 const port = 3000;
@@ -18,7 +17,9 @@ app.set('view engine', 'handlebars');
 const scrape = async (req, res) => {
   let { car } = req.body;
 
-  const browser = process.env.ENV === 'DEV' ? await chromium.launch({
+  const { chromium } = await import('playwright');
+
+  const browser = process.env.NODE_ENV?.trim() === 'dev' ? await chromium.launch({
     headless: false
   }) : await chromium.connect(
     'wss://chrome.browserless.io/playwright?token=eebe19e4-9443-4b0d-b63d-c554768985f6'

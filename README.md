@@ -13,6 +13,16 @@ Clone the project and install the dependencies.
 $ git clone https://github.com/danielcassiano/OLX-Web-Scraping
 $ cd web-scraping-olx
 $ pnpm install
+
+// To run it locally (.env):
+NODE_ENV="DEV"
+
+// To run it on cloud, go to https://cloud.browserless.io/account/ and get a free API Key
+// And insert the API Key into :index.ts:24:
+
+await chromium.connect(
+  'wss://chrome.browserless.io/playwright?token=YOUR_API_KEY_HERE'
+);
 ```
 
 ## Running the app

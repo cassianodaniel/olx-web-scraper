@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 
 test('Get cars', async ({ page }) => {
+  let car = "Honda Civic";
   type Cars = {
     name: string;
     address: string;
@@ -25,9 +26,9 @@ test('Get cars', async ({ page }) => {
   await page.goto('https://www.olx.com.br/');
 
   // Type and search car
-  await page.getByTestId('searchtext-input').click();
-  await page.getByTestId('searchtext-input').fill(data.car.name);
-  await page.getByTestId('searchtext-input').press('Enter');
+  await page.$('#searchtext-input').then((el) => el?.click());
+  await page.$('#searchtext-input').then((el) => el?.fill(car));
+  await page.$('#searchtext-input').then((el) => el?.press('Enter'));
 
   // Wait for the results to load
   await page.waitForLoadState('domcontentloaded');

@@ -1,8 +1,7 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import Handlebars from 'handlebars';
 import { engine } from 'express-handlebars';
-import { chromium } from 'playwright';
+import bodyParser from 'body-parser';
+import { chromium } from 'playwright-core';
 
 const app = express();
 const port = 3000;
@@ -13,14 +12,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // To render a view using a template engine in Express.js
 app.set('view engine', 'handlebars');
 
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 const scrape = async (req, res) => {
   let { car } = req.body;
-  const browser = await chromium.launch({
-    headless: true
-  });
+
+
+  const browser = process.env.NODE_ENV?.trim() === 'dev' ? await chromium.launch({
+    headless: false
+  }) : await chromium.connect(
+    'wss://chrome.browserless.io/playwright?token=eebe19e4-9443-4b0d-b63d-c554768985f6'
+  );
+
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -33,9 +37,9 @@ const scrape = async (req, res) => {
   await page.goto('https://www.olx.com.br/');
 
   // Type and search car
-  await page.getByTestId('searchtext-input').click();
-  await page.getByTestId('searchtext-input').fill(car);
-  await page.getByTestId('searchtext-input').press('Enter');
+  await page.$('#searchtext-input').then((el) => el?.click());
+  await page.$('#searchtext-input').then((el) => el?.fill(car));
+  await page.$('#searchtext-input').then((el) => el?.press('Enter'));
 
   // Wait for the results to load
   await page.waitForLoadState('domcontentloaded');
@@ -67,19 +71,13 @@ const scrape = async (req, res) => {
     });
   });
 
-  const source = "<p>Hello, {{name}}!</p>";
-  const template = Handlebars.compile(source);
-  const ctx = { x: "y" };
-  const html = template(ctx);
-
   function weight(car) {
     return car.km * 0.65 + car.price * 0.25 + car.year * 0.1;
   }
 
   const sortedCars = cars.sort((car1, car2) => weight(car1) - weight(car2));
 
-
-  res.render('index', { title: 'My Node.js Project', body: html, name: "Daniel", cars: sortedCars });
+  res.render('home', { cars: sortedCars });
 
   await context.close();
   await browser.close();

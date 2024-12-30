@@ -27,8 +27,3 @@ BROWSERLESS_IO_ENV_VARIABLE=""
 # development
 $ pnpm run start
 ```
-
-## Authors
-
-- [Daniel Chaves](https://github.com/danielcassiano)
-- [Andressa Alves](https://github.com/aandressaalves)
